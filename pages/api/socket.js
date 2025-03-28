@@ -1,7 +1,6 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-const PORT = process.env.PORT || 3001; // Gunakan port dari environment atau 3001
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
@@ -10,19 +9,16 @@ const io = new Server(httpServer, {
   },
 });
 
-let chatHistory = []; // Simpan riwayat chat sementara
+let chatHistory = []; // Simpan pesan sementara
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // Kirim riwayat chat saat user bergabung
   socket.emit("chatHistory", chatHistory);
 
-  // Tangani pesan yang dikirim user
   socket.on("sendMessage", (data) => {
-    console.log(`Pesan dari ${data.sender}: ${data.message}`);
     chatHistory.push(data);
-    io.emit("receiveMessage", data); // Kirim pesan ke semua client
+    io.emit("receiveMessage", data);
   });
 
   socket.on("disconnect", () => {
@@ -30,9 +26,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Jalankan server WebSocket
+const PORT = 3001;
 httpServer.listen(PORT, () => {
-  console.log(`WebSocket server running on http://localhost:${PORT}`);
-}).on("error", (err) => {
-  console.error("Server error:", err.message);
+  console.log(`✅ WebSocket server running on http://localhost:${PORT}`);
 });
