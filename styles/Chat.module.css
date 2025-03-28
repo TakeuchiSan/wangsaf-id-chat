@@ -1,0 +1,79 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.loginContainer, .chatContainer {
+  width: 90%;
+  max-width: 400px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.chatBox {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background: #fff;
+}
+
+.inputContainer {
+  display: flex;
+  margin-top: 10px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #0056b3;
+}
+
+.myMessage {
+  background: #007bff;
+  color: white;
+  padding: 8px;
+  border-radius: 10px;
+  max-width: 70%;
+  align-self: flex-end;
+  margin-bottom: 5px;
+  text-align: right;
+}
+
+.otherMessage {
+  background: #e0e0e0;
+  padding: 8px;
+  border-radius: 10px;
+  max-width: 70%;
+  align-self: flex-start;
+  margin-bottom: 5px;
+  text-align: left;
+}
