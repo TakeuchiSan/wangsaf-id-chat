@@ -1,0 +1,30 @@
+{
+  "name": "wangsaf-id-chat",
+  "version": "1.0.0",
+  "description": "A real-time group chat app using Next.js and Socket.io",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "type": "module",
+  "keywords": [
+    "nextjs",
+    "chat",
+    "socket.io",
+    "realtime"
+  ],
+  "license": "MIT"
+}
