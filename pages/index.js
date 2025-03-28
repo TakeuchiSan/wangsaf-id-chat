@@ -1,89 +1,82 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import styles from "../styles/Chat.module.css"; // Import CSS untuk tampilan
 
-const socket = io("https://your-socket-server.com"); // Ganti dengan server WebSocket-mu
+const socket = io("http://localhost:3002"); // Ganti dengan URL backend
 
-export default function ChatPage() {
+export default function Home() {
   const [username, setUsername] = useState("");
-  const [message, setMessage] = useState("");
+  const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    socket.on("chatMessage", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+    socket.on("receiveMessage", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
 
-    return () => socket.off("chatMessage");
+    return () => {
+      socket.off("receiveMessage");
+    };
   }, []);
 
   const sendMessage = () => {
-    if (message.trim()) {
-      const chatData = { username, text: message };
-      socket.emit("chatMessage", chatData);
-      setMessages((prev) => [...prev, chatData]); // Tambahkan ke daftar chat
-      setMessage("");
-    }
+    if (chatInput.trim() === "") return;
+
+    const message = { sender: username, message: chatInput };
+    socket.emit("sendMessage", message);
+    setMessages((prevMessages) => [...prevMessages, message]); // Tambahkan ke UI lokal
+    setChatInput("");
   };
 
   return (
-    <div className="chat-container">
-      <h1>WANGSAF ID Chat</h1>
-      <input
-        type="text"
-        placeholder="Masukkan username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <div className="chat-box">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`chat-bubble ${msg.username === username ? "self" : "other"}`}
+    <div className={styles.container}>
+      {!isLoggedIn ? (
+        <div className={styles.loginContainer}>
+          <h1>Masuk ke WANGSAF ID Chat</h1>
+          <input
+            type="text"
+            placeholder="Masukkan username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={styles.input}
+          />
+          <button
+            onClick={() => setIsLoggedIn(true)}
+            className={styles.button}
           >
-            <strong>{msg.username}</strong>: {msg.text}
+            Masuk
+          </button>
+        </div>
+      ) : (
+        <div className={styles.chatContainer}>
+          <h1 className={styles.header}>WANGSAF ID Chat</h1>
+          <div className={styles.chatBox}>
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={
+                  msg.sender === username ? styles.myMessage : styles.otherMessage
+                }
+              >
+                <strong>{msg.sender}:</strong> {msg.message}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <input
-        type="text"
-        placeholder="Ketik pesan..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={sendMessage}>Kirim</button>
-      <style jsx>{`
-        .chat-container {
-          max-width: 600px;
-          margin: 20px auto;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 10px;
-          text-align: center;
-        }
-        .chat-box {
-          height: 300px;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-          padding: 10px;
-        }
-        .chat-bubble {
-          max-width: 70%;
-          padding: 10px;
-          margin: 5px;
-          border-radius: 10px;
-        }
-        .self {
-          align-self: flex-end;
-          background-color: #007bff;
-          color: white;
-        }
-        .other {
-          align-self: flex-start;
-          background-color: #e0e0e0;
-          color: black;
-        }
-      `}</style>
+          <div className={styles.inputContainer}>
+            <input
+              type="text"
+              placeholder="Ketik pesan..."
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              className={styles.input}
+            />
+            <button onClick={sendMessage} className={styles.button}>
+              Kirim
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
