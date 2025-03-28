@@ -1,42 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
-export default function Home() {
+const socket = io();
+
+export default function ChatPage() {
   const [username, setUsername] = useState("");
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  // Saat user connect, ambil chat lama dari server
+  useEffect(() => {
+    fetch("/api/getChats")
+      .then((res) => res.json())
+      .then((data) => setMessages(data));
+
+    socket.on("receiveMessage", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, []);
 
   const sendMessage = () => {
-    if (message.trim()) {
-      setChat([...chat, { username, text: message }]);
-      setMessage("");
-    }
+    if (chatInput.trim() === "") return;
+
+    const message = { sender: username, message: chatInput };
+
+    // Kirim pesan ke WebSocket
+    socket.emit("sendMessage", message);
+
+    setChatInput("");
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "20px auto", fontFamily: "Arial" }}>
-      <h2>WANGSAF ID Chat</h2>
+    <div>
+      <h1>WANGSAF ID Chat</h1>
       <input
         type="text"
         placeholder="Masukkan username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
       />
-      <div style={{ border: "1px solid #ddd", padding: "10px", height: "300px", overflowY: "auto", background: "#f9f9f9" }}>
-        {chat.map((msg, index) => (
-          <p key={index}><strong>{msg.username}:</strong> {msg.text}</p>
+      <div>
+        {messages.map((msg, index) => (
+          <p key={index}>
+            <strong>{msg.sender}:</strong> {msg.message}
+          </p>
         ))}
       </div>
       <input
         type="text"
         placeholder="Ketik pesan..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        style={{ width: "80%", padding: "8px", marginTop: "10px" }}
+        value={chatInput}
+        onChange={(e) => setChatInput(e.target.value)}
       />
-      <button onClick={sendMessage} style={{ width: "18%", padding: "8px", marginLeft: "2%", background: "#25D366", color: "#fff", border: "none", cursor: "pointer" }}>
-        Kirim
-      </button>
+      <button onClick={sendMessage}>Kirim</button>
     </div>
   );
 }
