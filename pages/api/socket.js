@@ -1,45 +1,30 @@
-import { Server } from "socket.io";
-import fs from "fs";
-import path from "path";
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
-export default function handler(req, res) {
-  if (!res.socket.server.io) {
-    const io = new Server(res.socket.server);
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
-    io.on("connection", (socket) => {
-      console.log("User connected:", socket.id);
+let chatHistory = []; // Simpan pesan sementara
 
-      // Ketika user mengirim pesan
-      socket.on("sendMessage", (message) => {
-        console.log("Message received:", message);
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
 
-        // Simpan pesan ke database (JSON)
-        saveChat(message);
+  socket.on("sendMessage", (data) => {
+    chatHistory.push(data);
+    io.emit("receiveMessage", data);
+  });
 
-        // Kirim pesan ke semua user
-        io.emit("receiveMessage", message);
-      });
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
-      socket.on("disconnect", () => {
-        console.log("User disconnected");
-      });
-    });
-
-    res.socket.server.io = io;
-  }
-
-  res.end();
-}
-
-// Fungsi menyimpan chat ke JSON
-function saveChat(message) {
-  const filePath = path.join(process.cwd(), "database", "chats.json");
-
-  let chatData = [];
-  if (fs.existsSync(filePath)) {
-    chatData = JSON.parse(fs.readFileSync(filePath));
-  }
-
-  chatData.push({ sender: message.sender, message: message.message, timestamp: new Date() });
-  fs.writeFileSync(filePath, JSON.stringify(chatData, null, 2));
-}
+// Jalankan server WebSocket di port 3001
+httpServer.listen(3001, () => {
+  console.log("WebSocket server running on http://localhost:3001");
+});
