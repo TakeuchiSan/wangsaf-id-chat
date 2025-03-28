@@ -1,34 +1,96 @@
-.container {
+.chatContainer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  width: 100vw;
   height: 100vh;
+  justify-content: center;
   background-color: #f0f2f5;
 }
 
-.loginContainer, .chatContainer {
-  width: 90%;
-  max-width: 400px;
+.loginContainer {
   background: white;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.header {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.usernameInput {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.sendButton {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.sendButton:hover {
+  background: #0056b3;
 }
 
 .chatBox {
+  width: 90%;
+  max-width: 500px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chatTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
   height: 300px;
   overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
   padding: 10px;
-  background: #fff;
+  background: #e6e6e6;
+  border-radius: 5px;
+}
+
+.message {
+  display: flex;
+  margin: 5px 0;
+}
+
+.sent {
+  justify-content: flex-end;
+}
+
+.received {
+  justify-content: flex-start;
+}
+
+.messageBubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.sent .messageBubble {
+  background: #007bff;
+  color: white;
+}
+
+.received .messageBubble {
+  background: #e6e6e6;
+  color: black;
 }
 
 .inputContainer {
@@ -36,44 +98,13 @@
   margin-top: 10px;
 }
 
-.input {
+.messageInput {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 10px;
+.sendButton {
   margin-left: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.button:hover {
-  background: #0056b3;
-}
-
-.myMessage {
-  background: #007bff;
-  color: white;
-  padding: 8px;
-  border-radius: 10px;
-  max-width: 70%;
-  align-self: flex-end;
-  margin-bottom: 5px;
-  text-align: right;
-}
-
-.otherMessage {
-  background: #e0e0e0;
-  padding: 8px;
-  border-radius: 10px;
-  max-width: 70%;
-  align-self: flex-start;
-  margin-bottom: 5px;
-  text-align: left;
 }
