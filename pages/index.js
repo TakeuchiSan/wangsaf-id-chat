@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import styles from "../styles/Chat.module.css"; // Import CSS untuk tampilan
 
-const socket = io("http://localhost:3002"); // Ganti dengan URL backend
+const socket = io("http://localhost:3001"); // Ganti dengan URL backend
 
 export default function Home() {
   const [username, setUsername] = useState("");
